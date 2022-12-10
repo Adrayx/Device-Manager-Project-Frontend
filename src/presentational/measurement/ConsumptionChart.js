@@ -143,7 +143,7 @@ export default function ConsumptionChart() {
                                         ...theme.typography.body1,
                                     }}
                                 >
-                                    Sales ($)
+                                    Consumption
                                 </Label>
                             </YAxis>
                             <Line
