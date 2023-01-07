@@ -29,10 +29,12 @@ import {
     IconButton,
     Slide, TableFooter,
     TablePagination, TextField,
-    Typography, useTheme
+    Typography, useTheme, Snackbar, Alert
 } from "@mui/material";
 import {Link as RouterLink} from "react-router-dom";
 import PropTypes from "prop-types";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 const Link = React.forwardRef(function Link(itemProps, ref) {
     return <RouterLink ref={ref} {...itemProps} role={undefined} />;
@@ -337,6 +339,7 @@ function Row(device) {
 }
 
 export default function UserDevicesList(){
+
     const [devices, setDevices] = useState([]);
 
     useEffect(() => {
@@ -363,8 +366,77 @@ export default function UserDevicesList(){
         setPage(0);
     };
 
+    function connect() {
+        let socket = new SockJS('http://localhost:8080/websocket-app');
+        let stompClient = Stomp.over(socket);
+        stompClient.connect({}, function(frame) {
+            console.log(frame);
+            stompClient.subscribe('/all/notification', result => {
+                console.log(result.body);
+                alert(result.body);
+                handleClickSnackbar(result.body);
+            });
+        });
+    }
+
+    connect();
+
+    const handleClickSnackbar = (message) => () => {
+        setSnackPack((prev) => [...prev, { message, key: new Date().getTime() }]);
+    };
+
+    const [snackPack, setSnackPack] = React.useState([]);
+    const [openSnackbar, setOpenSnackbar] = React.useState(false);
+    const [messageInfoSnackbar, setMessageInfoSnackbar] = React.useState(undefined);
+
+    React.useEffect(() => {
+        if(snackPack.length && !messageInfoSnackbar) {
+            setMessageInfoSnackbar({...snackPack[0]});
+            setSnackPack((prev) => prev.slice(1));
+            setOpenSnackbar(true);
+        } else if(snackPack.length && messageInfoSnackbar && openSnackbar){
+            setOpenSnackbar(false)
+        }
+    }, [snackPack, messageInfoSnackbar, openSnackbar]);
+
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSnackbar(false);
+    };
+
+    const handleExited = () => {
+        setMessageInfoSnackbar(undefined);
+    };
+
     return (
         <React.Fragment>
+            <Snackbar
+                key={messageInfoSnackbar ? messageInfoSnackbar.key : undefined}
+                open={openSnackbar}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbar}
+                severity="warning"
+                TransitionProps={{ onExited: handleExited }}
+                message={messageInfoSnackbar ? messageInfoSnackbar.message : undefined}
+                action={
+                    <React.Fragment>
+                        <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            sx={{ p: 0.5 }}
+                            onClick={handleCloseSnackbar}
+                        >
+                            <Close />
+                        </IconButton>
+                    </React.Fragment>
+                }
+            >
+                <Alert onClose={handleCloseSnackbar} severity="warning" sx={{ width: '100%' }}>
+                    { messageInfoSnackbar ? messageInfoSnackbar.message : undefined }
+                </Alert>
+            </Snackbar>
             <Paper
                 sx={{display: 'flex',
                     flexDirection: 'column'}}

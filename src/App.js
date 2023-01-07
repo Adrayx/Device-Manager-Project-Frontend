@@ -28,6 +28,8 @@ import UserAddDevice from "./presentational/user/UserAddDevice";
 import CreateMeasurement from "./presentational/measurement/CreateMeasurement";
 import ConsumptionChart from "./presentational/measurement/ConsumptionChart";
 import LogIn from "./presentational/LogIn";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 const drawerWidth = 240;
 
@@ -78,6 +80,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const mdTheme = createTheme();
 
 function App() {
+
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -178,6 +181,7 @@ function App() {
                         <Routes>
                             <Route exact={true} path="/" element={<Home />}/>
                             <Route exact={true} path="/log_in" element={<LogIn/>}/>
+                            <Route exact={true} path="/test_page" element={<DevicesList />}/>
 
                             <Route exact={true} path="/my_profile" element={<PrivateRouteLogged><UserDetails /></PrivateRouteLogged>} />
                             {/*<Route exact={true} path="/create_account" element={<Home />}/>*/}
