@@ -28,8 +28,7 @@ import UserAddDevice from "./presentational/user/UserAddDevice";
 import CreateMeasurement from "./presentational/measurement/CreateMeasurement";
 import ConsumptionChart from "./presentational/measurement/ConsumptionChart";
 import LogIn from "./presentational/LogIn";
-import SockJS from "sockjs-client";
-import Stomp from "stompjs";
+import ChatRoom from "./presentational/chat/ChatRoom";
 
 const drawerWidth = 240;
 
@@ -198,6 +197,8 @@ function App() {
 
                             <Route exact={true} path="/my_devices" element={<PrivateRouteClient><UserDevicesList /></PrivateRouteClient>} />
                             <Route exact={true} path="/my_consumption" element={<PrivateRouteClient><ConsumptionChart /></PrivateRouteClient>} />
+
+                            <Route exact={true} path="/chat" element={<PrivateRouteLogged><ChatRoom /></PrivateRouteLogged>} />
                         </Routes>
                     </Container>
                 </Box>

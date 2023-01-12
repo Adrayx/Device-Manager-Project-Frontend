@@ -1,5 +1,12 @@
 
-import {AccountBox, BarChartOutlined, DeviceHubRounded, Home, SupervisedUserCircleRounded} from "@mui/icons-material";
+import {
+    AccountBox,
+    BarChartOutlined,
+    Chat,
+    DeviceHubRounded,
+    Home,
+    SupervisedUserCircleRounded
+} from "@mui/icons-material";
 
 export const navData = [
     {
@@ -43,5 +50,12 @@ export const navData = [
         text: "Consumption",
         link: "my_consumption",
         role: "false"
+    },
+    {
+        id: 6,
+        icon: <Chat/>,
+        text: "Chat",
+        link: "chat",
+        role: "logged"
     }
 ]
